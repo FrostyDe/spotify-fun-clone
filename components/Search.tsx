@@ -4,15 +4,23 @@ import React, { FunctionComponent } from "react";
 type SearchProps = {
   search: string;
   setSearch(e: any): void;
+  setOpenSidebar: any;
 };
 
 const Search: React.FunctionComponent<SearchProps> = ({
   search,
   setSearch,
+  setOpenSidebar,
 }) => {
   const useSearch = (e: any) => {
     setSearch(e.target.value);
     localStorage.setItem("searchValue", e.target.value);
+  };
+
+  const handleKeyDown = (e: any) => {
+    if (e.key === "Enter") {
+      setOpenSidebar(false);
+    }
   };
 
   return (
@@ -21,6 +29,7 @@ const Search: React.FunctionComponent<SearchProps> = ({
       <input
         type="text"
         value={search}
+        onKeyDown={(e) => handleKeyDown(e)}
         onChange={(e) => useSearch(e)}
         placeholder="Search"
         className="bg-[#494949] block w-full focus:outline-none ml-2 text-sm"

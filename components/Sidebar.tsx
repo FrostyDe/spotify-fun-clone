@@ -27,21 +27,18 @@ const Sidebar: React.FunctionComponent<SidebarProps> = ({
   const router = useRouter();
   const path = router.asPath;
   const { data: session } = useSession();
-  const [playlists, setPlaylists] = useState(
-    JSON.parse(localStorage.getItem("playlist")!)
-  );
+  const [playlists, setPlaylists] = useState<any[]>();
 
   useEffect(() => {
     if (spotifyApi.getAccessToken()) {
       spotifyApi.getUserPlaylists().then((data: any) => {
         setPlaylists(data.body.items);
-        localStorage.setItem("playlist", JSON.stringify(data.body.items));
       }),
         (err: any) => {
           console.log("Error fetching playlist", err);
         };
     }
-  }, [session, spotifyApi, playlists]);
+  }, [session, spotifyApi]);
 
   const routePage = (page: any) => {
     router.push(page, undefined, { shallow: true });
@@ -120,7 +117,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = ({
   );
 
   return (
-    <div className="bg-[#111111] relative min-w-[230px] text-white h-screen px-10 xl:p-14 pt-10 pb-0 flex flex-col gap-2 justify-between overflow-hidden">
+    <div className="bg-[#111111] relative min-w-[230px] text-white h-screen max-xl:px-10 xl:px-8 2xl:px-14 pt-10 pb-0 flex flex-col gap-2 justify-between overflow-hidden">
       <div>
         <div className="flex justify-between items-center">
           <Image
@@ -135,7 +132,11 @@ const Sidebar: React.FunctionComponent<SidebarProps> = ({
           />
         </div>
 
-        <Search search={search} setSearch={setSearch} />
+        <Search
+          setOpenSidebar={setOpenSidebar}
+          search={search}
+          setSearch={setSearch}
+        />
         {menus}
         {playlist}
       </div>
