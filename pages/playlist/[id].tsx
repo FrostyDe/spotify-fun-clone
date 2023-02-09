@@ -1,30 +1,20 @@
-import { useEffect, useRef, useState } from "react";
-import type { NextPage } from "next";
+import { useEffect, useState } from "react";
 import Head from "next/head";
 import { useSession } from "next-auth/react";
 import { Bars } from "react-loader-spinner";
 
-import Sidebar from "../components/Sidebar";
-import Dashboard from "../components/Dashboard";
-import useSpotify from "../hooks/useSpotify";
-import { useRecoilState } from "recoil";
-import { MusicNoteIcon, VolumeUpIcon } from "@heroicons/react/outline";
-import { playingTrackState, playState } from "../atoms/playerAtoms";
-import Player from "../components/Player";
+import Sidebar from "../../components/Sidebar";
+import Dashboard from "../../components/Dashboard";
+import useSpotify from "../../hooks/useSpotify";
+import Player from "../../components/Player";
 
-const Home = () => {
+const PlaylistPage = () => {
   const { data: session, status } = useSession();
   const spotifyApi = useSpotify();
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [pages, setPages] = useState("");
-  const [playingTrack, setPlayingTrack] = useRecoilState(playingTrackState);
-  const [play, setPlay] = useRecoilState(playState);
   const [openSidebar, setOpenSidebar] = useState(false);
-
-  const chooseTrack = (track: any) => {
-    setPlayingTrack(track);
-  };
 
   useEffect(() => {
     if (spotifyApi.getAccessToken()) {
@@ -48,7 +38,10 @@ const Home = () => {
               };
             })
           );
-        });
+        }),
+          (err: any) => {
+            console.log(err);
+          };
       }
     }
   }, [session, spotifyApi, search]);
@@ -69,9 +62,9 @@ const Home = () => {
   }
 
   return (
-    <div className="flex min-h-screen font-poppins text-sm antialiased select-none">
+    <div className="flex min-h-screen font-poppins text-sm antialiased">
       <Head>
-        <title>Spotify Fun Clone - Dwiki</title>
+        <title>Playlist - Spotify Fun Clone</title>
       </Head>
       <link
         href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
@@ -115,4 +108,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default PlaylistPage;

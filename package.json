@@ -1,16 +1,25 @@
 {
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED=false next dev",
     "build": "next build",
     "start": "next start"
   },
   "dependencies": {
+    "lodash": "^4.17.21",
     "next": "latest",
+    "next-auth": "^4.19.2",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-icons": "^4.7.1",
+    "react-loader-spinner": "^5.3.4",
+    "recoil": "^0.7.6",
+    "spotify-web-api-node": "^5.0.2",
+    "tailwind-scrollbar-hide": "^1.1.7"
   },
   "devDependencies": {
+    "@heroicons/react": "^1.0.6",
+    "@iconscout/react-unicons": "^1.1.6",
     "@types/node": "18.11.3",
     "@types/react": "18.0.21",
     "@types/react-dom": "18.0.6",

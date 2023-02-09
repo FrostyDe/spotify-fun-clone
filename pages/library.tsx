@@ -7,24 +7,15 @@ import { Bars } from "react-loader-spinner";
 import Sidebar from "../components/Sidebar";
 import Dashboard from "../components/Dashboard";
 import useSpotify from "../hooks/useSpotify";
-import { useRecoilState } from "recoil";
-import { MusicNoteIcon, VolumeUpIcon } from "@heroicons/react/outline";
-import { playingTrackState, playState } from "../atoms/playerAtoms";
 import Player from "../components/Player";
 
-const Home = () => {
+const LibraryPage = () => {
   const { data: session, status } = useSession();
   const spotifyApi = useSpotify();
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [pages, setPages] = useState("");
-  const [playingTrack, setPlayingTrack] = useRecoilState(playingTrackState);
-  const [play, setPlay] = useRecoilState(playState);
   const [openSidebar, setOpenSidebar] = useState(false);
-
-  const chooseTrack = (track: any) => {
-    setPlayingTrack(track);
-  };
 
   useEffect(() => {
     if (spotifyApi.getAccessToken()) {
@@ -48,7 +39,10 @@ const Home = () => {
               };
             })
           );
-        });
+        }),
+          (err: any) => {
+            console.log(err);
+          };
       }
     }
   }, [session, spotifyApi, search]);
@@ -69,7 +63,7 @@ const Home = () => {
   }
 
   return (
-    <div className="flex min-h-screen font-poppins text-sm antialiased select-none">
+    <div className="flex min-h-screen font-poppins text-sm antialiased">
       <Head>
         <title>Spotify Fun Clone - Dwiki</title>
       </Head>
@@ -115,4 +109,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default LibraryPage;
