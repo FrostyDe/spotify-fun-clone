@@ -102,7 +102,7 @@ const Player = () => {
   };
 
   const floatingPlaying = (
-    <div className="fixed bottom-[5rem] left-2 flex items-center gap-2 p-3 w-56 rounded-lg bg-[#111111] md:hidden">
+    <div className="fixed bottom-[5rem] left-2 flex items-center justify-between gap-2 p-3 w-56 rounded-lg bg-[#111111] md:hidden">
       <div className="col-span-3 flex flex-col self-center gap-2">
         <h1 className="font-semibold text-sm">{playingTrack.title}</h1>
         <p className="text-sm font-light">{playingTrack.artist}</p>
