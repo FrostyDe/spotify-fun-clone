@@ -187,7 +187,7 @@ const Player = () => {
           </button>
           {repeatState === "off" && (
             <button onClick={() => handleRepeat()}>
-              <TbRepeat className="w-6 h-6" />
+              <TbRepeat className="w-5 h-5 text-gray-300" />
             </button>
           )}
 

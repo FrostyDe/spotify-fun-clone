@@ -53,7 +53,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = ({
       <div className="flex flex-col justify-start gap-4 text-sm font-light">
         <button
           className={`flex gap-2 items-center hover:text-white ${
-            path === "/" ? "font-bold text-white" : "text-[#C5C5C5]"
+            path === "/" ? "text-white" : "text-[#C5C5C5]"
           }`}
           onClick={() => {
             routePage("/");
@@ -65,7 +65,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = ({
         </button>
         <button
           className={`flex gap-2 items-center hover:text-white ${
-            path === "/library" ? "font-bold text-white" : "text-[#C5C5C5]"
+            path === "/library" ? "text-white" : "text-[#C5C5C5]"
           }`}
           onClick={() => {
             routePage("/library");
@@ -77,7 +77,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = ({
         </button>
         <button
           className={`flex gap-2 items-center hover:text-white ${
-            path === "/liked-songs" ? "font-bold text-white" : "text-[#C5C5C5]"
+            path === "/liked-songs" ? "text-white" : "text-[#C5C5C5]"
           }`}
           onClick={() => {
             routePage("/liked-songs");
