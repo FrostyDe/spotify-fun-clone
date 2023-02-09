@@ -177,12 +177,14 @@ const Default: FunctionComponent<HomeProps> = ({
 
   return (
     <div className="px-10 pb-10 h-[calc(100vh_-_11rem)] overflow-scroll scrollbar-hide scroll-smooth">
-      <section className="flex flex-col">
-        <h1 className="font-semibold text-base">Top Music For You</h1>
-        <div className="grid grid-cols-1 lg:grid-cols-2 my-4 gap-5">
-          {newReleasesCard}
-        </div>
-      </section>
+      {topTracks.length !== 0 && (
+        <section className="flex flex-col">
+          <h1 className="font-semibold text-base">Top Music For You</h1>
+          <div className="grid grid-cols-1 lg:grid-cols-2 my-4 gap-5">
+            {newReleasesCard}
+          </div>
+        </section>
+      )}
       <section className="flex flex-col py-5">
         <h1 className="font-semibold text-base">Recommendations</h1>
         <div className="grid grid-cols-1 lg:grid-cols-2 my-4 gap-5">
