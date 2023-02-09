@@ -47,11 +47,6 @@ const Sidebar: React.FunctionComponent<SidebarProps> = ({
     router.push(page, undefined, { shallow: true });
   };
 
-  const handleSignOut = () => {
-    localStorage.removeItem("playlist");
-    signOut();
-  };
-
   const menus = (
     <div className="flex flex-col py-2">
       <h1 className="font-semibold text-sm mb-5">Menu</h1>

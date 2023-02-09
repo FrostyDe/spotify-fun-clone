@@ -41,6 +41,11 @@ const Header: FunctionComponent<HeaderProps> = ({ title, setOpenSidebar }) => {
     setMenuOpen(!menuOpen);
   };
 
+  const handleSignOut = () => {
+    localStorage.removeItem("playlist");
+    signOut();
+  };
+
   return (
     <header className="flex justify-between p-10 sticky top-0 select-none">
       <div className="hidden md:flex gap-2 items-center">
@@ -100,7 +105,7 @@ const Header: FunctionComponent<HeaderProps> = ({ title, setOpenSidebar }) => {
                   : "opacity-0 -z-50 bottom-0 right-0"
               }`}
             >
-              <button onClick={() => signOut()}>Logout</button>
+              <button onClick={() => handleSignOut()}>Logout</button>
             </div>
           </div>
         )}
