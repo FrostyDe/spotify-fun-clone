@@ -102,11 +102,13 @@ const Player = () => {
   };
 
   const floatingPlaying = (
-    <div className="fixed top-10 left-2 flex gap-2 h-10 w-20 rounded-full bg-[#111111]">
-      <div className="overflow-hidden bg-gray-400 rounded-full"></div>
+    <div className="fixed bottom-[5rem] left-2 flex items-center gap-2 p-3 w-56 rounded-lg bg-[#111111] md:hidden">
       <div className="col-span-3 flex flex-col self-center gap-2">
         <h1 className="font-semibold text-sm">{playingTrack.title}</h1>
         <p className="text-sm font-light">{playingTrack.artist}</p>
+      </div>
+      <div className="w-12 overflow-hidden rounded-md">
+        <img src={playingTrack.albumUrl} alt="" />
       </div>
     </div>
   );
@@ -207,6 +209,7 @@ const Player = () => {
           )}
         </div>
       </div>
+      {play && floatingPlaying}
     </div>
   );
 };
