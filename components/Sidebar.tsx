@@ -32,7 +32,7 @@ const Sidebar: React.FunctionComponent<SidebarProps> = ({
   );
 
   useEffect(() => {
-    if (spotifyApi.getAccessToken() && playlists === null) {
+    if (spotifyApi.getAccessToken()) {
       spotifyApi.getUserPlaylists().then((data: any) => {
         setPlaylists(data.body.items);
         localStorage.setItem("playlist", JSON.stringify(data.body.items));
