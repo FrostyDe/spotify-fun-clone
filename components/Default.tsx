@@ -41,7 +41,10 @@ const Default: FunctionComponent<HomeProps> = ({
       });
     } else {
       spotifyApi.play({
-        uris: [item.uri],
+        context_uri: item.album_context,
+        offset: {
+          position: item.track_offset - 1,
+        },
       });
       setPlay(true);
     }
@@ -58,6 +61,8 @@ const Default: FunctionComponent<HomeProps> = ({
                 artist: item.artists[0].name,
                 title: item.name,
                 album_type: item.name,
+                album_context: item.album.uri,
+                track_offset: item.track_number,
                 uri: item.uri,
                 albumUrl: item.album.images[0].url,
               };
@@ -87,6 +92,8 @@ const Default: FunctionComponent<HomeProps> = ({
                   uri: track.uri,
                   albumUrl: track.album.images[0].url,
                   popularity: track.popularity,
+                  album_context: track.album.uri,
+                  track_offset: track.track_number,
                 };
               })
             );
