@@ -10,6 +10,7 @@ import useSpotify from "../hooks/useSpotify";
 import { useRecoilState } from "recoil";
 import { MusicNoteIcon, VolumeUpIcon } from "@heroicons/react/outline";
 import { playingTrackState, playState } from "../atoms/playerAtoms";
+import Player from "../components/Player";
 
 const Home = () => {
   const { data: session, status } = useSession();
@@ -18,6 +19,7 @@ const Home = () => {
   const [searchResult, setSearchResult] = useState([]);
   const [pages, setPages] = useState("");
   const [playingTrack, setPlayingTrack] = useRecoilState(playingTrackState);
+  const [play, setPlay] = useRecoilState(playState);
   const [openSidebar, setOpenSidebar] = useState(false);
 
   const chooseTrack = (track: any) => {
@@ -108,6 +110,7 @@ const Home = () => {
           />
         </div>
       </main>
+      <Player />
     </div>
   );
 };

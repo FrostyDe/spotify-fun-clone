@@ -1,19 +1,14 @@
 import { BsFillPlayCircleFill, BsFillPauseCircleFill } from "react-icons/bs";
-import { isEmpty } from "lodash";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useRecoilState } from "recoil";
 import { playingTrackState, playState } from "../atoms/playerAtoms";
 import useSpotify from "../hooks/useSpotify";
-import { BiSkipPrevious, BiSkipNext, BiDevices } from "react-icons/bi";
+import { BiSkipPrevious, BiSkipNext } from "react-icons/bi";
 import { GiMusicalNotes } from "react-icons/gi";
 import { IoShuffle } from "react-icons/io5";
 import { TbRepeatOnce, TbRepeat } from "react-icons/tb";
 import { useSession } from "next-auth/react";
 import { FiVolume1, FiVolume2, FiVolumeX } from "react-icons/fi";
-
-type Window = {
-  onSpotifyWebPlaybackSDKReady: any;
-};
 
 const Player = () => {
   const spotifyApi = useSpotify();
@@ -22,80 +17,34 @@ const Player = () => {
   const [volume, setVolume] = useState(100);
   const [repeatState, setRepeatState] = useState("off");
   const [shuffleState, setShuffleState] = useState(false);
-  const [devices, setDevices] = useState<any[]>([]);
-  const [openDevices, setOpenDevices] = useState<boolean>(false);
   const [playingTrack, setPlayingTrack] = useRecoilState(playingTrackState);
-  const [isPlayerActive, setPlayerActive] = useState<boolean>(false);
-  const [player, setPlayer] = useState<any | null>(null);
 
   useEffect(() => {
     if (spotifyApi.getAccessToken()) {
-      const script = document.createElement("script");
-      script.src = "https://sdk.scdn.co/spotify-player.js";
-      script.async = false;
-
-      document.body.appendChild(script);
-
-      window.onSpotifyWebPlaybackSDKReady = () => {
-        const player = new window.Spotify.Player({
-          name: "Spotify Fun Clone",
-          getOAuthToken: (cb: any) => {
-            cb(spotifyApi.getAccessToken());
-          },
-        });
-
-        player.addListener("ready", ({ device_id }: { device_id: any }) => {
-          console.log("Ready with Device ID", device_id);
-          spotifyApi.transferMyPlayback([device_id]);
-        });
-
-        player.addListener("not_ready", ({ device_id }: { device_id: any }) => {
-          console.log("Device ID has gone offline", device_id);
-        });
-
-        player.addListener("player_state_changed", (state: any) => {
-          if (!state) {
-            return;
+      spotifyApi.getMyCurrentPlaybackState().then((data: any) => {
+        if (data.body) {
+          const item = data.body.item;
+          setPlayingTrack({
+            id: item?.id,
+            artist: item?.artists[0].name,
+            title: item?.name,
+            album_type: item?.name,
+            uri: item?.uri,
+            albumUrl: item?.album.images[0].url,
+          });
+          if (data.body?.is_playing) {
+            setPlay(true);
+          } else {
+            setPlay(false);
           }
-
-          if (state.track_window.current_track) {
-            setPlayingTrack({
-              id: state.track_window.current_track.id,
-              artist: state.track_window.current_track.artists[0].name,
-              title: state.track_window.current_track.name,
-              album_type: state.track_window.current_track.name,
-              uri: state.track_window.current_track.uri,
-              albumUrl: state.track_window.current_track.album.images[0].url,
-              repeat_mode: state.repeat_mode,
-              shuffle: state.shuffle,
-            });
-          }
-          setPlay(!state.paused);
-          setPlayerActive(true);
-        });
-
-        player.connect();
-        setPlayer(player);
-        console.log("player is set");
-      };
+          setRepeatState(data.body?.repeat_state);
+          setShuffleState(data.body?.shuffle_state);
+        }
+      });
     }
-  }, [session]);
-
-  const getDevices = () => {
-    spotifyApi.getMyDevices().then(
-      function (data: any) {
-        let availableDevices = data.body.devices;
-        setDevices(availableDevices);
-        setOpenDevices(!openDevices);
-      },
-      function (err: any) {
-        console.log("Something went wrong!", err);
-      }
-    );
-  };
+  }, [playingTrack, session, spotifyApi, play]);
 
   const handlePlayPause = () => {
-    setPlay(!play);
     if (play) {
       spotifyApi.pause();
       setPlay(false);
@@ -105,7 +54,7 @@ const Player = () => {
   };
 
   const handleNext = () => {
-    player.nextTrack();
+    spotifyApi.skipToNext();
     spotifyApi.getMyCurrentPlaybackState().then((data: any) => {
       const item = data.body.item;
       setPlayingTrack({
@@ -120,7 +69,7 @@ const Player = () => {
   };
 
   const handlePrev = () => {
-    player.previousTrack();
+    spotifyApi.skipToPrevious();
     spotifyApi.getMyCurrentPlaybackState().then((data: any) => {
       const item = data.body.item;
       setPlayingTrack({
@@ -135,38 +84,20 @@ const Player = () => {
   };
 
   const handleVolume = (volume: number) => {
-    spotifyApi.setVolume(volume).then(
-      function () {
-        setVolume(volume);
-      },
-      function (err: any) {
-        console.log("Something went wrong!", err);
-      }
-    );
-  };
-
-  const handleTransferPlayback = (deviceId: any) => {
-    spotifyApi.transferMyPlayback([deviceId]);
-    setOpenDevices(false);
+    setVolume(volume);
   };
 
   const handleShuffle = () => {
-    spotifyApi.setShuffle(!playingTrack.shuffle);
+    spotifyApi.setShuffle(!shuffleState);
   };
 
   const handleRepeat = () => {
-    if (playingTrack.repeat_mode === 0) {
-      spotifyApi
-        .setRepeat("context")
-        .then(() => setPlayingTrack({ ...playingTrack, repeat_mode: 1 }));
-    } else if (playingTrack.repeat_mode === 1) {
-      spotifyApi
-        .setRepeat("track")
-        .then(() => setPlayingTrack({ ...playingTrack, repeat_mode: 2 }));
+    if (repeatState === "off") {
+      spotifyApi.setRepeat("context");
+    } else if (repeatState === "context") {
+      spotifyApi.setRepeat("track");
     } else {
-      spotifyApi
-        .setRepeat("off")
-        .then(() => setPlayingTrack({ ...playingTrack, repeat_mode: 0 }));
+      spotifyApi.setRepeat("off");
     }
   };
 
@@ -233,56 +164,42 @@ const Player = () => {
             <img src={playingTrack.albumUrl} alt="" />
           </div>
         </div>
-        <div className="col-span-4 flex flex-col items-center justify-center gap-2">
-          <div className="flex items-center justify-center gap-5">
-            {isPlayerActive ? (
-              <>
-                <button className="pr-5">
-                  <BiSkipPrevious
-                    onClick={() => handlePrev()}
-                    className="w-8 h-8"
-                  />
-                </button>
-                {play ? (
-                  <button onClick={() => handlePlayPause()}>
-                    <BsFillPauseCircleFill className="h-10 w-10" />
-                  </button>
-                ) : (
-                  <button onClick={() => handlePlayPause()}>
-                    <BsFillPlayCircleFill className="h-10 w-10" />
-                  </button>
-                )}
-                <button onClick={() => handleNext()} className="pl-5">
-                  <BiSkipNext className="w-8 h-8" />
-                </button>
-              </>
-            ) : (
-              <div className="bg-green-500 text-gray-900 px-2 py-1 rounded-full">
-                Player not active, you need to be premium user to access
-                playback
-              </div>
-            )}
-          </div>
+        <div className="col-span-4 flex items-center justify-center gap-5">
+          <button className="pr-5">
+            <BiSkipPrevious onClick={() => handlePrev()} className="w-8 h-8" />
+          </button>
+          {play ? (
+            <button onClick={() => handlePlayPause()}>
+              <BsFillPauseCircleFill className="h-10 w-10" />
+            </button>
+          ) : (
+            <button onClick={() => handlePlayPause()}>
+              <BsFillPlayCircleFill className="h-10 w-10" />
+            </button>
+          )}
+          <button onClick={() => handleNext()} className="pl-5">
+            <BiSkipNext className="w-8 h-8" />
+          </button>
         </div>
-        <div className="col-span-2 md:col-span-1 flex gap-4 justify-center items-center">
+        <div className="col-span-2 md:col-span-1 flex gap-4 justify-center md:justify-end items-center">
           <button onClick={() => handleShuffle()}>
             <IoShuffle
-              className={`w-6 h-6 ${playingTrack.shuffle && "text-green-500"}`}
+              className={`w-6 h-6 ${shuffleState && "text-green-500"}`}
             />
           </button>
-          {playingTrack.repeat_mode === 0 && (
+          {repeatState === "off" && (
             <button onClick={() => handleRepeat()}>
               <TbRepeat className="w-5 h-5 text-gray-300" />
             </button>
           )}
 
-          {playingTrack.repeat_mode === 1 && (
+          {repeatState === "context" && (
             <button onClick={() => handleRepeat()}>
               <TbRepeat className="w-6 h-6 text-green-500" />
             </button>
           )}
 
-          {playingTrack.repeat_mode === 2 && (
+          {repeatState === "track" && (
             <button onClick={() => handleRepeat()}>
               <TbRepeatOnce
                 className="w-6 h-6 
@@ -290,29 +207,6 @@ const Player = () => {
               />
             </button>
           )}
-          <div className="relative z-10">
-            <button onClick={() => getDevices()}>
-              <BiDevices className="w-5 h-5" />
-            </button>
-            {openDevices && (
-              <div className="bg-[#1d1d1d] absolute bottom-10 p-2 rounded-md gap-2 right-0 flex flex-col w-40">
-                {devices.map((item: any) => (
-                  <button
-                    key={item.id}
-                    onClick={() => handleTransferPlayback(item.id)}
-                  >
-                    <p
-                      className={`p-2 rounded-md bg-[#111111] ${
-                        item.is_active && "text-green-500"
-                      }`}
-                    >
-                      {item.name}
-                    </p>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
         </div>
       </div>
       {play && floatingPlaying}

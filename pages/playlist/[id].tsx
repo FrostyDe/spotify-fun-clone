@@ -103,6 +103,7 @@ const PlaylistPage = () => {
           />
         </div>
       </main>
+      <Player />
     </div>
   );
 };
