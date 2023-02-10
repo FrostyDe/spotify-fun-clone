@@ -104,7 +104,6 @@ const LibraryPage = () => {
           />
         </div>
       </main>
-      <Player />
     </div>
   );
 };

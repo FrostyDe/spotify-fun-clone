@@ -7,6 +7,8 @@ export interface Playing {
   artist?: string;
   id?: any;
   album_type?: any;
+  repeat_mode?: number;
+  shuffle?: boolean;
 }
 
 export const playState = atom({
@@ -16,10 +18,5 @@ export const playState = atom({
 
 export const playingTrackState = atom({
   key: "playingTrackState",
-  default: {} as Playing,
-});
-
-export const savedTrackState = atom({
-  key: "savedTrackState",
   default: {} as Playing,
 });

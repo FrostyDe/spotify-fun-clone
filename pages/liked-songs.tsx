@@ -105,7 +105,6 @@ const LikedSongsPage = () => {
           />
         </div>
       </main>
-      <Player />
     </div>
   );
 };
