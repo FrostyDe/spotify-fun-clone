@@ -4,8 +4,7 @@ declare module "next";
 declare module "next/router";
 declare module "lodash";
 
-declare global {
-  interface Window {
-    onSpotifyWebPlaybackSDKReady: any;
-  }
+interface Window {
+  onSpotifyWebPlaybackSDKReady(): void;
+  Spotify: typeof Spotify;
 }

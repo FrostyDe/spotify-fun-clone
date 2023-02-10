@@ -11,6 +11,10 @@ import { TbRepeatOnce, TbRepeat } from "react-icons/tb";
 import { useSession } from "next-auth/react";
 import { FiVolume1, FiVolume2, FiVolumeX } from "react-icons/fi";
 
+type Window = {
+  onSpotifyWebPlaybackSDKReady: any;
+};
+
 const Player = () => {
   const spotifyApi = useSpotify();
   const { data: session } = useSession();
@@ -31,6 +35,7 @@ const Player = () => {
       script.async = false;
 
       document.body.appendChild(script);
+
       window.onSpotifyWebPlaybackSDKReady = () => {
         const player = new window.Spotify.Player({
           name: "Spotify Fun Clone",
@@ -39,12 +44,12 @@ const Player = () => {
           },
         });
 
-        player.addListener("ready", ({ device_id }) => {
+        player.addListener("ready", ({ device_id }: { device_id: any }) => {
           console.log("Ready with Device ID", device_id);
           spotifyApi.transferMyPlayback([device_id]);
         });
 
-        player.addListener("not_ready", ({ device_id }) => {
+        player.addListener("not_ready", ({ device_id }: { device_id: any }) => {
           console.log("Device ID has gone offline", device_id);
         });
 
