@@ -3,7 +3,11 @@ import { UilEllipsisH } from "@iconscout/react-unicons";
 import { HeartIcon } from "@heroicons/react/outline";
 import { PauseIcon, PlayIcon } from "@heroicons/react/solid";
 import { useRecoilState } from "recoil";
-import { playState, playingTrackState } from "../atoms/playerAtoms";
+import {
+  playState,
+  playingTrackState,
+  savedTrackState,
+} from "../atoms/playerAtoms";
 import useSpotify from "../hooks/useSpotify";
 import { useSession } from "next-auth/react";
 
@@ -16,6 +20,7 @@ const SearchResult: FunctionComponent<SearchResultProps> = ({
   chooseTrack,
 }) => {
   const spotifyApi = useSpotify();
+  const [savedTrack, setSavedTrack] = useRecoilState(savedTrackState);
   const [play, setPlay] = useRecoilState(playState);
   const [playingTrack, setPlayingTrack] = useRecoilState(playingTrackState);
 

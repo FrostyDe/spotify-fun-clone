@@ -27,9 +27,10 @@ const Default: FunctionComponent<HomeProps> = ({
   const [playingTrack, setPlayingTrack] = useRecoilState(playingTrackState);
 
   const handlePlay = (item: any) => {
+    setPlayingTrack(item);
+
     if (item.uri === playingTrack.uri) {
       spotifyApi.getMyCurrentPlaybackState().then((data: any) => {
-        setPlayingTrack(item);
         if (data.body.is_playing) {
           spotifyApi.pause();
           setPlay(false);
@@ -39,17 +40,13 @@ const Default: FunctionComponent<HomeProps> = ({
         }
       });
     } else {
-      spotifyApi
-        .play({
-          context_uri: item.album_context,
-          offset: {
-            position: item.track_offset - 1,
-          },
-        })
-        .then(() => {
-          setPlayingTrack(item);
-          setPlay(true);
-        });
+      spotifyApi.play({
+        context_uri: item.album_context,
+        offset: {
+          position: item.track_offset - 1,
+        },
+      });
+      setPlay(true);
     }
   };
 
