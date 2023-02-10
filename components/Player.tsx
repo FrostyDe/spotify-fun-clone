@@ -10,7 +10,6 @@ import { IoShuffle } from "react-icons/io5";
 import { TbRepeatOnce, TbRepeat } from "react-icons/tb";
 import { useSession } from "next-auth/react";
 import { FiVolume1, FiVolume2, FiVolumeX } from "react-icons/fi";
-import { Bars } from "react-loader-spinner";
 
 const Player = () => {
   const spotifyApi = useSpotify();
